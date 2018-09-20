@@ -1,0 +1,11 @@
+383. Caravans http://codeforces.com/problemsets/acmsguru/problem/99999/383
+
+334. Tiny Puzzle http://codeforces.com/problemsets/acmsguru/problem/99999/334
+
+326. Perspective http://codeforces.com/problemsets/acmsguru/problem/99999/326
+
+217. Two Cylinders http://codeforces.com/problemsets/acmsguru/problem/99999/217
+
+417. Heavy Disc http://codeforces.com/problemsets/acmsguru/problem/99999/417
+
+194. Reactor Cooling http://codeforces.com/problemsets/acmsguru/problem/99999/194
