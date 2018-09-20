@@ -1,0 +1,21 @@
+#include <bits/stdc++.h>
+#include <unistd.h>
+
+using namespace std;
+
+int main() {
+  for (int T = 1; T <= 100; T++) {
+    cout << T << ": ";
+    system("./gen");
+    system("./test");
+    system("./std");
+    if (system("diff test.out std.out")) {
+      cout << "WA" << endl;
+      return 0;
+    } else {
+      cout << "AC" << endl;
+    }
+    usleep(1000000);
+  }
+  return 0;
+}
