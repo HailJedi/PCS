@@ -5,6 +5,7 @@ using namespace std;
 
 int main() {
   for (int T = 1; T <= 100; T++) {
+    cout << T << ": ";
     system("./gen");
     system("./test");
     system("./std");
