@@ -8,7 +8,6 @@ const int L = 10000 + 5;
 int f[N][L];
 char str[L];
 vector<int> ans;
-bool pre[N][L];
 
 bool update(int &x, int y) {
 	if (x < y) {
@@ -19,23 +18,25 @@ bool update(int &x, int y) {
 }
 
 struct Bracket {
-	int val, mn_val, id, len;
+	int inc, id, len;
+	int lk, rk, cmp;
 	Bracket() {}
 	bool operator < (const Bracket &br) const {
-		if (mn_val != br.mn_val) {
-		    return mn_val > br.mn_val;
+		int c1 = this->cmp, c2 = br.cmp;
+		if (c1 == 1 && c2 == 1) {
+			return this->rk < br.rk;
 		}
-		if (val != br.val) {
-		    return val > br.val;
+		if (c1 == -1 && c2 == -1) {
+			return this->lk > br.lk;
 		}
-		return len > br.len;
+		return c1 > c2;
 	}
 } brak[N];
 
 void dfs(int i, int j) {
 	if (i) {
-		if (pre[i][j] == true) {
-			dfs(i-1, j-brak[i].val);
+		if (f[i][j] != f[i-1][j]) {
+			dfs(i-1, j-brak[i].inc);
 			ans.push_back(brak[i].id);
 		} else {
 			dfs(i-1, j);
@@ -44,34 +45,41 @@ void dfs(int i, int j) {
 }
 
 int main() {
-	int n, tot_len = 0;
+	int n;
   scanf("%d", &n);
   for (int i = 1; i <= n; i++) {
   	scanf("%s", str);
   	brak[i].len = strlen(str);
-  	brak[i].val = 0;
-  	brak[i].mn_val = 1e9;
-  	tot_len += brak[i].len;
+		stack<char> stk;
   	for (int j = 0; j < brak[i].len; j++) {
-  		brak[i].val += (str[j] == '(' ? 1 : -1);
-  		if (brak[i].val < 0) {
-      		brak[i].mn_val = (brak[i].mn_val == -1e9 ? brak[i].val : min(brak[i].mn_val, brak[i].val));
-  		}
+			if (!stk.empty() && stk.top() == '(' && str[j] == ')') {
+				stk.pop();
+			} else {
+				stk.push(str[j]);
+			}
   	}
+		while (!stk.empty()) {
+			if (stk.top() == '(') {
+				brak[i].lk++;
+			} else {
+				brak[i].rk++;
+			}
+			stk.pop();
+		}
+		brak[i].inc = brak[i].lk - brak[i].rk;
+		brak[i].cmp = brak[i].inc < 0 ? -1 : brak[i].inc == 0 ? 0 : 1;
   	brak[i].id = i;
   }
   sort(brak+1, brak+1+n);
-  memset(f, -1, sizeof -1);
+  memset(f, -1, sizeof f);
   f[0][0] = 0;
   for (int i = 0; i < n; i++) {
-  	for (int j = 0; j <= tot_len; j++) {
+  	for (int j = 0; j <  L; j++) {
   		if (f[i][j] != -1) {
-  			if (update(f[i+1][j], f[i][j])) {
-  				pre[i+1][j] = false;
-  			}
-  			if (j + brak[i+1].mn_val >= 0 && update(f[i+1][j+brak[i+1].val], f[i][j] + brak[i+1].len)) {
-  				pre[i+1][j+brak[i+1].val] = true;
-  			}
+				update(f[i+1][j], f[i][j]);
+				if (j - brak[i+1].rk >= 0 && j + brak[i+1].inc < L) {
+					update(f[i+1][j+brak[i+1].inc], f[i][j] + brak[i+1].len);
+				}
   		}
   	}
   }
@@ -84,5 +92,6 @@ int main() {
   for (int i = 0; i < (int)ans.size(); i++) {
   	printf("%d ", ans[i]);
   }
+	printf("\n");
   return 0;
 }

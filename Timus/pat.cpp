@@ -9,7 +9,7 @@ int main() {
     system("./gen");
     system("./test");
     system("./std");
-    if (system("diff std.out test.out")) {
+    if (system("diff write.out write2.out")) {
       cout << "WA" << endl;
       return 0;
     }

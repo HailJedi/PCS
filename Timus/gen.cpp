@@ -5,7 +5,7 @@ using namespace std;
 int main() {
   freopen("read.in", "w", stdout);
   srand(time(NULL));
-  int n = rand() % 44 + 1, k = rand() % (int)1e9;
-  cout << n << ' ' << k << endl;
+  int n = rand() % 1000 + 1, k = rand() % 200 + 1, p = rand() % 999999999 + 2;
+  cout << n << ' ' << k << ' ' << p << endl;
   return 0;
 }
