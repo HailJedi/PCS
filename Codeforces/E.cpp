@@ -1,5 +1,5 @@
 /*
-Created 2018-09-28 09:32
+Created 2018-09-28
 Codeforces Round #199 (Div.2) E. Xenia and Tree
 http://codeforces.com/contest/342/problem/E
 A centroid decomposition solution
