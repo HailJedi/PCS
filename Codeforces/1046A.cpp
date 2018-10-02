@@ -8,40 +8,35 @@ A segment tree solution
 
 using namespace std;
 
-const int N = 100000 + 5;
-const int K = 20 + 5;
+const int N = 100000 + 1;
+const int K = 20 + 1;
 
 struct SegTree {
   SegTree *ls, *rs;
   int l, r, sum;
-  void *operator new(size_t, SegTree *ls, SegTree *rs, int l, int r, int sum) {
-    static SegTree pool[N*10], *p = pool;
-    SegTree *ret = p++;
-    ret->ls = ls;
-    ret->rs = rs;
-    ret->l = l;
-    ret->r = r;
-    ret->sum = sum;
-    return ret;
-  }
 } *qtree[N*K*2];
 
-void assign(SegTree *&o, int l, int r, int sum) {
-  if (o == 0x0) {
-    o = new (0x0, 0x0, l, r, sum) SegTree;
-  }
-}
+int qsize, xsize;
 
-int qsize;
+SegTree *make_new(int l, int r) {
+  SegTree *ret = new SegTree();
+  ret->l = l;
+  ret->r = r;
+  return ret;
+}
 
 void insert(SegTree *&o, int p) {
   if (o->l != o->r) {
     int mid = (o->l + o->r) / 2;
     if (p <= mid) {
-      assign(o->ls, 1, mid, 0);
+      if (o->ls == 0x0) {
+        o->ls = make_new(o->l, mid);
+      }
       insert(o->ls, p);
     } else {
-      assign(o->rs, mid+1, qsize, 0);
+      if (o->rs == 0x0) {
+        o->rs = make_new(mid+1, o->r);
+      }
       insert(o->rs, p);
     }
   }
@@ -91,7 +86,6 @@ int ID(vector<int> &vec, int x) {
 }
 
 int main() {
-  freopen("read.in", "r", stdin);
   scanf("%d %d", &n, &k);
   for (int i = 1; i <= n; i++) {
     scanf("%d %d %d", &x[i], &r[i], &q[i]);
@@ -100,8 +94,8 @@ int main() {
     xs.push_back(x[i]+r[i]);
     qs.push_back(q[i]);
     for (int j = 1; j <= k; j++) {
-      qs.push_back(q[i]+i);
-      qs.push_back(q[i]-i);
+      qs.push_back(q[i]+j);
+      qs.push_back(q[i]-j);
     }
   }
   sort(qs.begin(), qs.end());
@@ -109,40 +103,37 @@ int main() {
   qs.resize(distance(qs.begin(), unique(qs.begin(), qs.end())));
   xs.resize(distance(xs.begin(), unique(xs.begin(), xs.end())));
   for (int i = 1; i <= n; i++) {
-    event.push_back(make_tuple(x[i]-r[i], i, -1));
-    event.push_back(make_tuple(x[i], i, 0));
-    event.push_back(make_tuple(x[i]+r[i], i, 1));
+    event.push_back(tuple<int, int, int>(x[i]-r[i], -1, i));
+    event.push_back(tuple<int, int, int>(x[i], 0, i));
+    event.push_back(tuple<int, int, int>(x[i]+r[i], 1, i));
   }
   sort(event.begin(), event.end());
   qsize = qs.size();
+  xsize = xs.size();
   for (int i = 1; i <= qsize; i++) {
-    assign(qtree[i], 1, qsize, 0);
+    qtree[i] = make_new(1, xsize);
   }
   long long ans = 0;
-  for (int i = 0; i < (int)event.size(); i++) {
-    int ev = get<2>(event[i]);
-    int id = get<1>(event[i]);
+  for (auto tp: event) {
+    int ev = get<1>(tp);
+    int id = get<2>(tp);
+    int q_val = ID(qs, q[id]);
+    int x_val = ID(xs, x[id]);
     if (ev == -1) {
-      int q_val = ID(qs, q[i]);
-      int x_val = ID(xs, x[i]);
-      insert(qtree[k], x_val);
-    }
-    if (ev == 0) {
-      int lx_val = ID(xs, x[i]-r[i]);
-      int rx_val = ID(xs, x[i]+r[i]);
-      for (int j = -k; j <= k; j++) {
-        if (q[i]+j >= 0) {
-          int q_val = ID(qs, q[i]+j);
-          ans += query(qtree[q_val], rx_val, lx_val);
-        }
-      }
+      insert(qtree[q_val], x_val);
     }
     if (ev == 1) {
-      int q_val = ID(qs, q[i]);
-      int x_val = ID(xs, x[i]);
       erase(qtree[q_val], x_val);
     }
+    if (ev == 0) {
+      int lx_val = ID(xs, x[id]-r[id]);
+      int rx_val = ID(xs, x[id]+r[id]);
+      for (int i = -k; i <= k; i++) {
+        int q_val = ID(qs, q[id]+i);
+        ans += query(qtree[q_val], lx_val, rx_val);
+      }
+    }
   }
-  printf("%lld\n", ans);
+  printf("%lld\n", (ans-n)/2);
   return 0;
 }
