@@ -73,18 +73,17 @@ int f(int *a, int n) {
           (ret += solve(1, c2)) %= mod;
           c2[0][1]++;
         } else {
-          ret += (*max_element(c2, c2+4) == 0 && *min_element(c2, c2+4) == 0);
+          ret += (c2[0][0] == 0 && c2[0][1] == 0 && c2[1][0] == 0 && c2[1][1] == 0);
         }
         c2[a[i-1]][0]++;
       }
       c2[a[i-1]][a[i]]--;
     }
   }
-  return ret + (*max_element(c2, c2+4) == 0 && *min_element(c2, c2+4) == 0);
+  return ret + (c2[0][0] == 0 && c2[0][1] == 0 && c2[1][0] == 0 && c2[1][1] == 0);
 }
 
 int main() {
-  // freopen("read.in", "r", stdin);
   scanf("%s", in+1);
   na = strlen(in+1);
   for (int i = 1; i <= na; i++) {
@@ -105,7 +104,7 @@ int main() {
   for (int i = 2; i <= na; i++) {
     c[A[i-1]][A[i]]--;
   }
-  ans += (*max_element(c, c+4) == 0 && *min_element(c, c+4) == 0);
+  ans += (c[0][0] == 0 && c[0][1] == 0 && c[1][0] == 0 && c[1][1] == 0);
   printf("%d\n", (ans % mod + mod) % mod);
   return 0;
 }
