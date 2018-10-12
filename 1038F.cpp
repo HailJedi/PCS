@@ -8,6 +8,7 @@ Created 2018-10-11
 using namespace std;
 
 int main() {
+  freopen("read.in", "r", stdin);
   
   return 0;
 }
