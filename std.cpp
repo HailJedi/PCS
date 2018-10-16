@@ -1,3 +1,5 @@
+// std
+
 #include <bits/stdc++.h>
 
 #define N 2005
@@ -8,8 +10,8 @@ using namespace std;
 
 int m, n, p, k;
 int f[N][N];
-int AL[N], AR[N], Max[N];
-string L, R;
+int Max[N];
+vector<int> A, B;
 
 int power(int x, int y) {
 	int sum = 1;
@@ -24,8 +26,8 @@ int power(int x, int y) {
 
 int work0() {
 	int h[N] = {0}, s = 0;
-	for (int i = 1; i <= m; i++) {
-		for (int j = AL[i]; j <= AR[i]; j++) {
+	for (int i = 0; i < m; i++) {
+		for (int j = A[i]; j <= B[i]; j++) {
 			h[j] = 1;
 		}
 	}
@@ -45,12 +47,7 @@ void add(int &x, int y) {
 }
 
 int work1() {
-	for (int i = 1; i <= m; i++) {
-	  for (int j = AL[i]; j <= AR[i]; j++) {
-			Max[j] = max(Max[j], AR[i]);
-		}
-	}
-	int f[N] = {0};
+	static int f[N] = {0};
 	f[0] = 1;
 	for (int i = 1; i <= n; i++) {
 		add(f[i], f[i-1]);
@@ -59,34 +56,29 @@ int work1() {
 	return f[n];
 }
 
-int count(int n,vector<int> A,vector<int> B,int k) {
+int count() {
 	m = A.size();
-  for (int i = 1; i <= m; i++) {
- 		AL[i] = A[i-1];
-		AR[i] = B[i-1];
-	}
  	if (k == 0) return work0();
- 	if (k == 1) return work1();
-	for (int i = 1; i <= m; i++) {
-	  for (int j = AL[i]; j <= AR[i]; j++) {
-			Max[j] = max(Max[j], AR[i]);
+	for (int i = 0; i < m; i++) {
+	  for (int j = A[i]; j <= B[i]; j++) {
+			Max[j] = max(Max[j], B[i]);
 		}
 	}
+	if (k == 1) return work1();
 	f[0][0] = 1;
 	for (int i = 0; i < n; i++) {
 	  for (int j = 0; j <= n; j++) {
 		  if (f[i][j]) {
-		   	if (j == i+1) {
+		   	if (i+1 == j) {
 					add(f[i+1][0], f[i][j]);
 				} else {
 					add(f[i+1][j], f[i][j]);
 				}
-		   	if (j) {
-		   	  int Next = max(Max[i+1], j);
-		   	  if (Next == j) {
+		   	if (j != 0) {
+		   	  if (Max[i+1] <= j) {
 						add(f[j][0], f[i][j]);
 					} else {
-						add(f[j][Next], f[i][j]);
+						add(f[j][Max[i+1]], f[i][j]);
 					}
 				} else {
 				 	if (Max[i+1] <= i+1) {
@@ -102,14 +94,13 @@ int count(int n,vector<int> A,vector<int> B,int k) {
 }
 
 int main() {
-	freopen("read.in", "r", stdin);
+	// freopen("read.in", "r", stdin);
 	scanf("%d %d %d", &n, &m, &k);
-	vector<int> L, R;
 	while (m--) {
 		int x, y;
 	  scanf("%d %d", &x, &y);
-	  L.push_back(x);
-		R.push_back(y);
+	  A.push_back(x);
+		B.push_back(y);
 	}
-	printf("%d\n", count(n, L, R, k));
+	printf("%d\n", count());
 }
