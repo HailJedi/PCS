@@ -14,7 +14,7 @@ struct Spec {
 	int al, bb;
 	Spec(int al, int bb, int a) : al(al), bb(bb), a(a) {}
 	bool operator < (const Spec &sp) const {
-		return a > sp.a;
+		return a < sp.a;
 	}
 };
 
@@ -22,16 +22,15 @@ vector<Spec> st[4];
 int n;
 map<string, int> mp;
 
-int extract(set<Spec> &st, int &alice, int &bob) {
-	int ret = st.begin()->a;
-	alice += st.begin()->al;
-	bob += st.begin()->bb;
-	st.erase(st.begin());
+int extract(vector<Spec> &vec, int &alice, int &bob) {
+	int ret = vec.back().a;
+	alice += vec.back().al;
+	bob += vec.back().bb;
+	vec.pop_back();
 	return ret;
 }
 
 int main() {
-	freopen("read.in", "r", stdin);
 	mp["00"] = 0;
 	mp["01"] = 1;
 	mp["10"] = 2;
@@ -43,6 +42,9 @@ int main() {
 		cin >> str >> a;
 		int num = mp[str];
 		st[num].push_back(Spec(num / 2, num % 2, a));
+	}
+	for (int i = 0; i < 4; i++) {
+		sort(st[i].begin(), st[i].end());
 	}
 	int ans = 0;
 	int alice = 0, bob = 0, cnt = 0;
@@ -56,18 +58,18 @@ int main() {
 		cnt += 2;
 	}
 	while (!st[1].empty()) {
-		st[0].push_back(*st[1].begin());
-		st[1].erase(st[1].begin());
+		st[0].push_back(st[1].back());
+		st[1].pop_back();
 	}
 	while (!st[2].empty()) {
-		st[0].push_back(*st[2].begin());
-		st[2].erase(st[2].begin());
+		st[0].push_back(st[2].back());
+		st[2].pop_back();
 	}
+	sort(st[0].begin(), st[0].end());
 	int tmp = 0;
 	while (!st[0].empty()) {
 		tmp = extract(st[0], alice, bob);
 		cnt++;
-		cout << alice << ' ' << bob << ' ' << cnt << endl;
 		if (2 * alice >= cnt && 2 * bob >= cnt) {
 			ans += tmp;
 		} else {
