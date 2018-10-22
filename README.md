@@ -1,2 +1,2 @@
 # PCS
-Where I save my programming contest code.
+Where I save my programming contest solutions.
