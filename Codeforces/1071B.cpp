@@ -8,35 +8,12 @@ A greedy solution
 
 using namespace std;
 
-typedef unsigned long long ull;
-
 const int N = 2000 + 5;
-const int B = 998244353;
 
 int n, k;
 char mat[N][N];
-ull hsh[N][N];
-int pre[N][N];
 int f[N][N];
-
-void print(int i, int j) {
-	if (pre[i][j] != 0) {
-		if (pre[i][j] == 1) {
-			print(i-1, j);
-		} else {
-			print(i, j-1);
-		}
-	}
-	printf("%c", mat[i][j]);
-}
-
-bool update(ull &x, ull y, char c) {
-	if (x == -1 || x > y * B + c - 'a') {
-		x = y * B + c - 'a';
-		return true;
-	}
-	return false;
-}
+bool tag[N][N];
 
 void update(int &x, int y) {
 	if (x == -1 || x > y) {
@@ -45,12 +22,13 @@ void update(int &x, int y) {
 }
 
 int main() {
-	freopen("read.in", "r", stdin);	
+	// freopen("read.in", "r", stdin);	
 	scanf("%d %d", &n, &k);
 	for (int i = 1; i <= n; i++) {
 		scanf("%s", mat[i]+1);
 	}
 	memset(f, -1, sizeof f);
+	int p = 1;
 	for (int i = 1; i <= n; i++) {
 		for (int j = 1; j <= n; j++) {
 			int buf = mat[i][j] != 'a';
@@ -64,22 +42,42 @@ int main() {
 				update(f[i][j], f[i][j-1] + buf);
 			}
 			if (f[i][j] <= k) {
-				mat[i][j] = 'a';
-			}
-			hsh[i][j] = -1;
-		}
-	}
-	for (int i = 1; i <= n; i++) {
-		for (int j = 1; j <= n; j++) {
-			if (i-1 >= 1 && update(hsh[i][j], hsh[i-1][j], mat[i][j])) {
-				pre[i][j] = 1;
-			}
-			if (j-1 >= 1 && update(hsh[i][j], hsh[i][j-1], mat[i][j])) {
-				pre[i][j] = -1;
+				p = max(p, i+j);
 			}
 		}
 	}
-	print(n, n);
+	for (int i = 2; i <= p; i++) {
+		printf("a");
+	}
+	for (int i = p; i >= 1; i--) {
+		if (i <= n && p - i >= 1) {
+			int j = p - i;
+			if (f[i][j] <= k) {
+				tag[i][j] = true;
+			}
+		}
+	}
+	tag[0][1] = tag[1][0] = true;
+	for (p++; p <= 2*n; p++) {
+		char mn = 'z';
+		for (int i = p; i >= 1; i--) {
+			if (i <= n && p - i >= 1 && p - i <= n) {
+				int j = p - i;
+				if (tag[i-1][j] || tag[i][j-1]) {
+					mn = min(mn, mat[i][j]);
+				}
+			}
+		}
+		printf("%c", mn);
+		for (int i = p; i >= 1; i--) {
+			if (i <= n && p - i >= 1) {
+				int j = p - i;
+				if ((tag[i-1][j] || tag[i][j-1]) && mn == mat[i][j]) {
+					tag[i][j] = true;
+				}
+			}
+		}
+	}
 	printf("\n");
 	return 0;
 }	
