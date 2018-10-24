@@ -22,7 +22,6 @@ void update(int &x, int y) {
 }
 
 int main() {
-	// freopen("read.in", "r", stdin);	
 	scanf("%d %d", &n, &k);
 	for (int i = 1; i <= n; i++) {
 		scanf("%s", mat[i]+1);
