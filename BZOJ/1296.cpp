@@ -1,5 +1,6 @@
 /*
 Created 2018-11-02
+"[SCOI2009]粉刷匠"
 */
 
 #include <bits/stdc++.h>
@@ -55,4 +56,3 @@ int main() {
 	printf("%d\n", *max_element(f, f+1+t));
 	return 0;
 }
-	
