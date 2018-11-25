@@ -1,0 +1,90 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+const int N = 500 + 5;
+const int INF = 1e9;
+
+int f[N][N][2][2];
+int w[N][N];
+bool is_root[N];
+vector<int> g[N];
+
+void dp(int u, int amt, int fa) {
+	if (f[u][amt][0][(g[u].size()-1)&1] != -1) {
+		return;
+	}
+	if (amt == 0 || u == 0) {
+		f[u][amt][0][(g[u].size()-1)&1] = f[u][amt][1][(g[u].size()-1)&1] = 0;
+		return;
+	}
+	if (g[u].size() == 0) {
+		f[u][amt][0][(g[u].size()-1)&1] = f[u][amt][1][(g[u].size()-1)&1] = INF;
+		return;
+	}
+	f[u][amt][0][1] = f[u][amt][1][1] = 0;
+	for (int i = 0; i < g[u].size(); i++) {
+		int v = g[u][i];
+		int t = i & 1;
+		f[u][amt][1][t] = f[u][amt][0][t] = INF;
+		for (int j = 0; j <= amt; j++) {
+			dp(v, j, u);
+			f[u][amt][1][t] = min(f[u][amt][1][t], f[u][amt-j][1][t^1] + f[v][j][1][(g[v].size()-1)&1] + w[u][v] * 2);
+			f[u][amt][0][t] = min(f[u][amt][0][t], min(f[u][amt-j][1][t^1] + f[v][j][0][(g[v].size()-1)&1] + w[u][v], 
+				f[u][amt-j][0][t^1] + f[v][j][1][(g[v].size()-1)&1] + w[u][v] * 2));
+		}
+	}
+	return;
+}
+
+int main() {
+	freopen("read", "r", stdin);
+	freopen("write", "w", stdout);
+	
+	ios::sync_with_stdio(false);
+	cin.tie(0); cout.tie(0);
+	
+	int kase = 0, n;
+	while (cin >> n && n) {
+		for (int i = 1; i <= n; i++) {
+			g[i].clear();
+		}
+		memset(is_root, true, sizeof is_root);
+		for (int i = 1; i < n; i++) {
+			int u, v, d;
+			cin >> u >> v >> d;
+			u++, v++;
+			w[v][u] = d;
+			g[v].push_back(u);
+			is_root[u] = false;
+		}
+		int root = -1;
+		for (int i = 1; i <= n; i++) {
+			if (is_root[i]) {
+				root = i;
+				break;
+			}
+		}
+		memset(f, -1, sizeof f);
+		for (int i = 0; i <= n; i++) {
+			dp(root, i, -1);
+		}
+		int q;
+		cin >> q;
+		cout << "Case " << ++kase << ":" << endl;
+		while (q--) {
+			int x;
+			cin >> x;
+			int ans = 0;
+			for (int i = n; i >= 1; i--) {
+				if (f[root][i][0][(g[root].size()-1)&1] <= x) {
+					ans = i;
+					break;
+				}
+			}
+			cout << ans << endl;
+		}
+	}
+	return 0;
+}
+		
