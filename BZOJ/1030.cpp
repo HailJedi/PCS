@@ -102,7 +102,6 @@ public:
 } ac;
 
 int main() {
-	freopen("read.in", "r", stdin);
 	int n, m;
 	scanf("%d %d", &n, &m);
 	ac.init();
