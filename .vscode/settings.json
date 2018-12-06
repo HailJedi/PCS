@@ -1,4 +1,22 @@
 {
     "C_Cpp.errorSquiggles": "Disabled",
-    "git.ignoreLimitWarning": true
+		"git.ignoreLimitWarning": true,
+		"files.associations": {
+			"queue": "cpp",
+			"ostream": "cpp",
+			"vector": "cpp",
+			"__config": "cpp",
+			"__nullptr": "cpp",
+			"cstddef": "cpp",
+			"exception": "cpp",
+			"initializer_list": "cpp",
+			"new": "cpp",
+			"stdexcept": "cpp",
+			"type_traits": "cpp",
+			"typeinfo": "cpp",
+			"algorithm": "cpp",
+			"charconv": "cpp",
+			"cuchar": "cpp",
+			"cstdint": "cpp"
+		}
 }
