@@ -8,7 +8,7 @@ char ch[20];
  
 int trie[110][26],q[110],fail[110];
  
-bool end[110],vis[110];
+bool End[110],vis[110];
  
 struct Matrix
 {
@@ -35,7 +35,7 @@ inline void insert()
 		if(!trie[now][ch[i]-'a']) trie[now][ch[i]-'a']=++cnt;
 		now=trie[now][ch[i]-'a'];
 	}
-	end[now]=1;
+	End[now]=1;
 }
  
 inline void buildfail()
@@ -65,7 +65,7 @@ inline void buildmatrix()
 		for(int i=0;i<K;i++)
 		{
 			if(!vis[trie[now][i]]) vis[trie[now][i]]=1,q[++tail]=trie[now][i];
-			if(end[trie[now][i]]) Mat.a[now][cnt]+=G,Mat.a[now][0]+=G;
+			if(End[trie[now][i]]) Mat.a[now][cnt]+=G,Mat.a[now][0]+=G;
 			else Mat.a[now][trie[now][i]]+=G;
 		}
 	}
