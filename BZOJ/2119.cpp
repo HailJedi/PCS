@@ -1,6 +1,6 @@
 /*
 Created 2018-12-12
-"Uva10829L-gap字符串"
+"股市的预测"
 */
 
 #pragma C++ optimize(2)
@@ -12,7 +12,7 @@ using namespace std;
 const int N = 100000 + 5;
 
 int n, m;
-char str[N];
+int a[N];
 int lg[N];
 
 class SufArray {
@@ -30,7 +30,7 @@ class SufArray {
 	} temp[N];
 
 	static bool cmp(int i, int j) {
-		return str[i] < str[j];
+		return a[i] < a[j];
 	}
 
 	void build() {
@@ -39,7 +39,7 @@ class SufArray {
 		}
 		sort(sa+1, sa+1+n, cmp);
 		for (int i = 1; i <= n; i++) {
-			rk[sa[i]] = rk[sa[i-1]] + (str[sa[i-1]] != str[sa[i]]);
+			rk[sa[i]] = rk[sa[i-1]] + (a[sa[i-1]] != a[sa[i]]);
 		}
 		for (int k = 1; k <= n; k *= 2) {
 			for (int i = 1; i <= n; i++) {
@@ -56,7 +56,7 @@ class SufArray {
 		for (int i = 1, k = 0; i <= n; i++) {
 			k -= k ? 1 : 0;
 			int j = sa[rk[i]-1];
-			while (str[j+k] == str[i+k]) {
+			while (a[j+k] == a[i+k]) {
 				k++;
 			}
 			ht[rk[i]] = k;
@@ -83,8 +83,15 @@ class SufArray {
 } sa, rsa;
 
 int main() {
-	scanf("%d %s", &m, str+1);
-	n = strlen(str+1);
+	scanf("%d %d", &n, &m);
+	a[0] = -233;
+	for (int i = 1; i <= n; i++) {
+		scanf("%d", &a[i]);
+	}
+	n--;
+	for (int i = 1; i <= n; i++) {
+		a[i] = a[i+1] - a[i];
+	}
 	for (int i = 1, k = 0; i <= n; i++) {
 		while ((1<<(k+1)) <= i) {
 			k++;
@@ -93,7 +100,7 @@ int main() {
 	}
 	sa.build();
 	for (int i = 1, j = n; i <= j; i++, j--) {
-		swap(str[i], str[j]);
+		swap(a[i], a[j]);
 	}
 	rsa.build();
 	long long ans = 0;
