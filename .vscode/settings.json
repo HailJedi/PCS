@@ -20,6 +20,8 @@
 			"cstdint": "cpp",
 			"iostream": "cpp",
 			"stack": "cpp",
-			"ios": "cpp"
+			"ios": "cpp",
+			"cstring": "cpp",
+			"utility": "cpp"
 		}
 }
